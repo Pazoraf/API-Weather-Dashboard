@@ -56,7 +56,7 @@ function renderSearchHistory(){
   }
 
 function getGeoData(city){
-    var geoUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+ city + "&appid=" + key
+    var geoUrl = "https://api.openweathermap.org/geo/1.0/direct?q="+ city + "&appid=" + key
     fetch(geoUrl)
     .then(function (response){
         return response.json();
@@ -70,7 +70,7 @@ function getGeoData(city){
 }
 
 function getTodayWeatherData(lat, long){
-    weatherUrl  = "http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid=" + key
+    weatherUrl  = "https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid=" + key
     fetch(weatherUrl)
     .then(function (response){
         return response.json();
@@ -93,7 +93,7 @@ function getTodayWeatherData(lat, long){
 }
 
 function getFiveWeatherData(lat, long){
-    weatherUrl  = "http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid=" + key
+    weatherUrl  = "https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid=" + key
     fetch(weatherUrl)
     .then(function (response){
         return response.json();
