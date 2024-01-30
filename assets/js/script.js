@@ -4,13 +4,58 @@ var lat;
 var long;
 var weatherUrl;
 var date = dayjs().format("(DD/M/YYYY)")
+var searchHistory =[];
 
 
 $("#search-form").on("submit", function(event){
     event.preventDefault();
+    if($("#search-input").val() === ""){
+        alert("Please enter a city name")
+    }else{
     $("#today").empty()
     $("#forecast").empty()
     city = $("#search-input").val()
+    getGeoData(city)
+    if(!searchHistory.includes(city) && city !== ""){
+    searchHistory.push(city)
+    }
+    localStorage.setItem("searchInput", JSON.stringify(searchHistory))
+    renderSearchHistory();
+}
+})
+
+
+
+$(document).on("click",".history-button", function(event){
+    event.preventDefault()
+    $("#today").empty()
+    $("#forecast").empty()
+    city = $(this).text()
+    getGeoData(city)
+})
+
+
+function renderSearchHistory(){
+    var storedSearch = JSON.parse(localStorage.getItem("searchInput"));
+    if (storedSearch !== null){
+      searchHistory = storedSearch;
+    }
+    
+    $("#history").empty();
+    
+    for (var i = 0; i < searchHistory.length; i++) {
+      if (i === 10){
+        alert("Search history is full! Please clear your history");
+        break;
+      } else {
+        var historyButton = $("<button>").text(searchHistory[i]);
+        historyButton.addClass("history-button");
+        $("#history").prepend(historyButton);
+      }
+    }
+  }
+
+function getGeoData(city){
     var geoUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+ city + "&appid=" + key
     fetch(geoUrl)
     .then(function (response){
@@ -22,9 +67,7 @@ $("#search-form").on("submit", function(event){
         getTodayWeatherData(lat, long)
         getFiveWeatherData(lat, long)
     })
-})
-
-
+}
 
 function getTodayWeatherData(lat, long){
     weatherUrl  = "http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid=" + key
@@ -33,7 +76,6 @@ function getTodayWeatherData(lat, long){
         return response.json();
     })
     .then(function (data){
-        console.log(data)
         var iconCode =data.list[0].weather[0].icon
         var iconUrl = `https://openweathermap.org/img/w/${iconCode}.png`
         var icon = $("<img>").attr("src", iconUrl)
@@ -57,7 +99,6 @@ function getFiveWeatherData(lat, long){
         return response.json();
     })
     .then(function (data){
-        console.log(data)
         var fiveDayWeather ={};
         $.each(data.list, function (index, item){
             var date = item.dt_txt.split(" ")[0];
@@ -67,7 +108,6 @@ function getFiveWeatherData(lat, long){
                 fiveDayWeather[date] = item;
             }
         })
-        console.log(fiveDayWeather)
         $("#forecast").append($("<h4>").text("5 Day Forecast:"))
         $.each(fiveDayWeather, function (index, item){
             var iconCode =item.weather[0].icon
@@ -89,3 +129,13 @@ function getFiveWeatherData(lat, long){
 
     })
 }
+renderSearchHistory()
+
+$("#clearButton").on("click", function(event){
+    event.preventDefault()
+    searchHistory = [];
+    localStorage.removeItem("searchInput");
+    $("#today").empty();
+    $("#forecast").empty();
+    $(".history-button").remove();
+  });
