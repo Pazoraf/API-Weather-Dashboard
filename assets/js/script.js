@@ -1,13 +1,18 @@
 var key = "c3dc591fe5eb6dff13c9c284f518a60e"
-var country = "Telford"
+var city;
 var lat;
 var long;
 var weatherUrl;
-var geoUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+ country + "&appid=" + key
 var date = dayjs().format("(DD/M/YYYY)")
 
 
-fetch(geoUrl)
+$("#search-form").on("submit", function(event){
+    event.preventDefault();
+    $("#today").empty()
+    $("#forecast").empty()
+    city = $("#search-input").val()
+    var geoUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+ city + "&appid=" + key
+    fetch(geoUrl)
     .then(function (response){
         return response.json();
     })
@@ -17,6 +22,9 @@ fetch(geoUrl)
         getTodayWeatherData(lat, long)
         getFiveWeatherData(lat, long)
     })
+})
+
+
 
 function getTodayWeatherData(lat, long){
     weatherUrl  = "http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid=" + key
