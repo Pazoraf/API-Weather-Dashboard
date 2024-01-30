@@ -1,4 +1,12 @@
 .today-content {
-    border: 1px solid black;
-    padding: 10px;
-  }
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.search-button {
+  margin: 1px;
+}
+
+#clearButton {
+  margin: 1px;
+}
